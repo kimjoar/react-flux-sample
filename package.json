@@ -1,22 +1,18 @@
 {
-  "name": "mentometer",
-  "private": true,
+  "name": "react-setup",
   "scripts": {
     "test": ""
   },
   "dependencies": {
-    "express": "^4.10.1",
+    "express": "^4.12.4",
     "flux": "^2.0.1",
     "immutable": "^3.0.2",
-    "jquery": "^2.1.1",
     "lodash": "^2.4.1",
-    "page": "^1.3.7",
     "react": "^0.12.0"
   },
   "devDependencies": {
     "browserify": "^6.2.0",
     "del": "^0.1.3",
-    "esnext": "^0.13.0",
     "gulp": "^3.8.9",
     "gulp-myth": "^1.0.1",
     "gulp-rename": "^1.2.0",
