@@ -3,6 +3,7 @@ var del = require('del');
 var gulp = require('gulp');
 var myth = require('gulp-myth');
 var util = require('gulp-util');
+var gulpif = require('gulp-if');
 var rename = require('gulp-rename');
 var source = require('vinyl-source-stream');
 var uglify = require('gulp-uglify');
@@ -25,8 +26,9 @@ var paths = {
     dist: './dist'
 };
 
-var browserifyOpts = Immutable.Map({ from: paths.js.src, to: paths.js.dest, dist: paths.dist });
-var watchifyOpts = browserifyOpts.set('watch', true);
+var browserifyOpts = Immutable.Map({ from: paths.js.src, to: paths.js.dest, dist: paths.dist, compress: true });
+var watchifyOpts = browserifyOpts.set('watch', true)
+                                 .set('compress', false);
 
 // ---
 
@@ -65,7 +67,8 @@ function browserifyTask(options) {
     var src = options.from;
     var dest = options.to;
     var dist = options.dist;
-    var watch = options.watch || false;
+    var watch = options.watch == null ? false : options.watch;
+    var compress = options.compress == null ? true : options.compress;
 
     return function() {
         var bundler = browserify({
@@ -95,7 +98,7 @@ function browserifyTask(options) {
                     util.log("Created:", util.colors.cyan(dest));
                 })
                 .pipe(source(dest))
-                // .pipe(streamify(uglify()))
+                .pipe(gulpif(compress, streamify(uglify())))
                 .pipe(gulp.dest(dist));
         };
 
