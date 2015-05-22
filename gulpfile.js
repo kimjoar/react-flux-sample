@@ -6,7 +6,7 @@ var util = require('gulp-util');
 var rename = require('gulp-rename');
 var source = require('vinyl-source-stream');
 var uglify = require('gulp-uglify');
-var reactify = require('reactify');
+var babelify = require('babelify');
 var watchify = require('watchify');
 var Immutable = require('immutable');
 var streamify = require('gulp-streamify');
@@ -74,7 +74,7 @@ function browserifyTask(options) {
             extensions: ['.jsx'],
             debug: true
         })
-        .transform(reactify);
+        .transform(babelify);
 
         if (watch) {
             bundler = watchify(bundler)

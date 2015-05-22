@@ -1,24 +1,25 @@
-var React = require('react');
+import React from 'react';
 
-module.exports = React.createClass({
+export default React.createClass({
 
-    getInitialState: function() {
+    getInitialState() {
         return {
             name: 'World'
         }
     },
 
-    changeValue: function(e) {
-        var name = e.target.value;
+    changeValue(e) {
+        let name = e.target.value;
         console.log('name', name);
         this.setState({ name: name });
     },
 
-    render: function() {
+    render() {
         return <div>
-            <h1>Hello { this.state.name }</h1>
+            <h2>Hello { this.state.name }</h2>
             <input onChange={ this.changeValue } value={ this.state.name } />
         </div>
     }
 
 });
+

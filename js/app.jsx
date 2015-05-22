@@ -1,8 +1,19 @@
-var React = require('react');
+import React from 'react';
+import Router from 'react-router';
+import { Route, DefaultRoute } from 'react-router';
 
-var App = require('./components/App.react');
+import App from './components/App';
+import Home from './components/Home';
 
-React.render(
-    <App />,
-    document.getElementById('app')
-);
+const routes = <Route handler={ App } path="/">
+    <DefaultRoute handler={ Home } />
+</Route>
+
+Router.run(routes, Router.HistoryLocation, (Root, state) => {
+    React.render(
+        <Root
+            params={ state.params }
+            query={ state.query } />,
+        document.body
+    );
+});
