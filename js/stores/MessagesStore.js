@@ -4,13 +4,17 @@ const Dispatcher = require('../dispatcher/Dispatcher');
 const EventEmitter = require('events').EventEmitter;
 
 let messages = null;
-let failed = null;
+let failed = [];
 
 // READ API
 const MessagesStore = _.assign({}, EventEmitter.prototype, {
 
     all: function() {
         return messages;
+    },
+
+    failed: function() {
+        return failed;
     },
 
     emitChange: function() {
@@ -47,12 +51,11 @@ Dispatcher.register(function(action) {
             break;
 
         case 'save_message_failed':
-            failed = {
-                cid: uuid.v4(),
+            failed.push({
                 error: action.error,
                 message: action.message
-            };
-            console.log('STORE', 'error received:', failed);
+            });
+            console.log('STORE', 'error received:', action.error);
             MessagesStore.emitChange();
             break;
 

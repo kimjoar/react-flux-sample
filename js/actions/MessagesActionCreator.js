@@ -1,3 +1,5 @@
+import uuid from 'node-uuid';
+
 import ajax from '../lib/ajax';
 import Dispatcher from '../dispatcher/Dispatcher';
 
@@ -17,6 +19,8 @@ const actions = {
 
     save(message) {
         console.log('ACTION', 'saving message:', message);
+
+        message.cid = uuid.v4();
 
         ajax.post('/message', message).then(
             res => {
