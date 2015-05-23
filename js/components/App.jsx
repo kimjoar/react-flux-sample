@@ -5,7 +5,7 @@ export default React.createClass({
 
     render() {
         return <div>
-            <h1>React!</h1>
+            <h1>Chat!</h1>
             <RouteHandler { ...this.props } />
         </div>
     }

@@ -1,0 +1,48 @@
+import _ from 'lodash';
+import React from 'react';
+
+import MessagesActionCreator from '../actions/MessagesActionCreator';
+
+const KEY_CODE_ENTER = 13;
+
+export default React.createClass({
+
+    getInitialState() {
+        return {
+            body: ''
+        }
+    },
+
+    componentDidMount() {
+        React.findDOMNode(this.refs.chatInput).focus();
+    },
+
+    render() {
+        return <input
+            className='chat-input'
+            ref='chatInput'
+            type='text'
+            value={ this.state.body }
+            onChange={ this._onChange }
+            onKeyUp={ this._save }/>
+    },
+
+    _onChange(e) {
+        let body = e.target.value;
+        this.setState({ body: body });
+    },
+
+    _save(e) {
+        let keyCode = e.keyCode;
+        let body = this.state.body;
+
+        if (keyCode == KEY_CODE_ENTER && body.trim() != '') {
+            let message = { body: body };
+            console.log('INPUT', 'enter pressed, saving:', message);
+            MessagesActionCreator.save(message);
+            this.setState(this.getInitialState());
+        }
+    }
+
+});
+
