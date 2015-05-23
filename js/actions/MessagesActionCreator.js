@@ -1,7 +1,7 @@
 import ajax from '../lib/ajax';
 import Dispatcher from '../dispatcher/Dispatcher';
 
-const actions = {
+export default {
 
     fetchAll() {
         console.log('ACTION', 'fetch all messages');
@@ -45,6 +45,4 @@ const actions = {
     }
 
 };
-
-export default actions;
 

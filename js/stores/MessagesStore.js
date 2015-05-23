@@ -1,7 +1,9 @@
-const _ = require('lodash');
-const uuid = require('node-uuid');
-const Dispatcher = require('../dispatcher/Dispatcher');
-const EventEmitter = require('events').EventEmitter;
+import _ from 'lodash';
+import uuid from 'node-uuid';
+import EventEmitter from 'events';
+
+import createMessage from '../lib/createMessage';
+import Dispatcher from '../dispatcher/Dispatcher';
 
 let messages = null;
 
@@ -34,7 +36,7 @@ Dispatcher.register(function(action) {
     switch(action.type) {
 
         case 'receive_messages':
-            messages = action.messages.map(create);
+            messages = action.messages.map(createMessage);
             console.log('STORE', 'messages received:', messages);
             MessagesStore.emitChange();
             break;
@@ -57,14 +59,6 @@ Dispatcher.register(function(action) {
 });
 
 export default MessagesStore;
-
-// We wrap our messages so we have an object that
-// we can save temp state on.
-function create(fields) {
-    return {
-        fields: fields
-    }
-}
 
 function addMessage(message) {
     // We create a copy of existing messages, but exclude the one

@@ -1,17 +1,17 @@
-var $ = require('jquery');
-var _ = require('lodash');
+import $ from 'jquery';
+import _ from 'lodash';
 
-var ajax = {
+const ajax = {
 
-    get: function(url) {
+    get(url) {
         return request(url, {
             type: "GET",
             dataType: "json"
         });
     },
 
-    post: function(url, data) {
-        var obj = {
+    post(url, data) {
+        let obj = {
             type: "POST",
             dataType: "json"
         };
@@ -26,8 +26,8 @@ var ajax = {
         return request(url, obj);
     },
 
-    put: function(url, data) {
-        var obj = {
+    put(url, data) {
+        let obj = {
             type: "PUT",
             dataType: "json"
         };
@@ -42,7 +42,7 @@ var ajax = {
         return request(url, obj);
     },
 
-    del: function(url) {
+    del(url) {
         return request(url, {
             type: "DELETE"
         });
@@ -53,14 +53,10 @@ var ajax = {
 export default ajax;
 
 function request(url, obj) {
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
         $.ajax(url, obj).then(
-            function(data) {
-                resolve(data);
-            },
-            function(jqXHR) {
-                reject(extractErrors(jqXHR));
-            }
+            data => resolve(data),
+            jqXHR => reject(extractErrors(jqXHR))
         );
     });
 }
@@ -69,7 +65,7 @@ function request(url, obj) {
 // an array with objects with keys "type" and "text", and an optional
 // "key" value. We normalize errors to an array.
 function extractErrors(jqXHR) {
-    var json = jqXHR.responseJSON;
+    let json = jqXHR.responseJSON;
     if (json) {
         if (_.isArray(json)) {
             return _.map(json, createError)
