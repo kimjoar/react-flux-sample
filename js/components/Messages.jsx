@@ -1,14 +1,13 @@
 import _ from 'lodash';
 import React from 'react';
 
-import FailedMessage from './FailedMessage';
+import Message from './Message';
 import MessagesStore from '../stores/MessagesStore';
 import MessagesActionCreator from '../actions/MessagesActionCreator';
 
 function getStateFromStores(props) {
     return {
-        messages: MessagesStore.all(),
-        failed: MessagesStore.failed()
+        messages: MessagesStore.all()
     };
 }
 
@@ -40,7 +39,6 @@ export default React.createClass({
 
     render() {
         var messages = this.state.messages;
-        var failed = this.state.failed;
 
         console.log('MESSAGES', 'render:', messages);
 
@@ -48,25 +46,18 @@ export default React.createClass({
             return <p>Spinner</p>
         }
 
-        if (messages.length == 0 && failed.length == 0) {
+        if (messages.length == 0) {
             return <p>Ingen meldinger</p>
         }
 
         return <ul>
             { messages.map(this.renderMessage) }
-            { failed.map(this.renderFailed) }
         </ul>
     },
 
     renderMessage(message) {
-        return <li key={ message.id }>
-            { message.body }
-        </li>
-    },
-
-    renderFailed(failed) {
-        return <li key={ failed.message.cid }>
-            <FailedMessage failed={ failed } />
+        return <li key={ message.fields.id }>
+            <Message message={ message }/>
         </li>
     },
 

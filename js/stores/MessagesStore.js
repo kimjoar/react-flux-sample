@@ -4,17 +4,12 @@ const Dispatcher = require('../dispatcher/Dispatcher');
 const EventEmitter = require('events').EventEmitter;
 
 let messages = null;
-let failed = [];
 
 // READ API
 const MessagesStore = _.assign({}, EventEmitter.prototype, {
 
     all: function() {
         return messages;
-    },
-
-    failed: function() {
-        return failed;
     },
 
     emitChange: function() {
@@ -39,23 +34,18 @@ Dispatcher.register(function(action) {
     switch(action.type) {
 
         case 'receive_messages':
-            messages = action.messages;
+            messages = action.messages.map(create);
             console.log('STORE', 'messages received:', messages);
             MessagesStore.emitChange();
             break;
 
         case 'save_message_success':
-            messages.push(action.message);
-            console.log('STORE', 'message received:', action.message);
+            addMessage(action.message);
             MessagesStore.emitChange();
             break;
 
         case 'save_message_failed':
-            failed.push({
-                error: action.error,
-                message: action.message
-            });
-            console.log('STORE', 'error received:', action.error);
+            addMessage(action.message);
             MessagesStore.emitChange();
             break;
 
@@ -67,4 +57,22 @@ Dispatcher.register(function(action) {
 });
 
 export default MessagesStore;
+
+// We wrap our messages so we have an object that
+// we can save temp state on.
+function create(fields) {
+    return {
+        fields: fields
+    }
+}
+
+function addMessage(message) {
+    // We create a copy of existing messages, but exclude the one
+    // we want to add if its already in the list
+    let newMessages = _.reject(messages, m => m.cid == message.cid);
+    // We then add our message
+    newMessages.push(message);
+    // ... and update the messages
+    messages = newMessages;
+}
 
