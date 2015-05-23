@@ -1,3 +1,5 @@
+import Immutable from 'immutable';
+
 import ajax from '../lib/ajax';
 import Dispatcher from '../dispatcher/Dispatcher';
 
@@ -10,7 +12,7 @@ export default {
             messages => {
                 Dispatcher.dispatch({
                     type: 'receive_messages',
-                    messages: messages
+                    messages: Immutable.fromJS(messages)
                 });
             });
     },
@@ -18,28 +20,23 @@ export default {
     create(message) {
         console.log('ACTION', 'saving message:', message.fields);
 
-        ajax.post('/message', message.fields).then(
+        ajax.post('/message', message.get('fields').toJS()).then(
             newFields => {
                 console.log('ACTION', 'save successful:', newFields);
-
-                message.fields = newFields;
-
-                // If this message had failed to save earlier
-                delete message.error;
 
                 Dispatcher.dispatch({
                     type: 'save_message_success',
                     message: message
+                        .set('fields', Immutable.fromJS(newFields))
+                        .delete('error')
                 });
             },
             err => {
                 console.log('ACTION', 'save failed:', err);
 
-                message.error = err;
-
                 Dispatcher.dispatch({
                     type: 'save_message_failed',
-                    message: message
+                    message: message.set('error', Immutable.fromJS(err))
                 });
             });
     }

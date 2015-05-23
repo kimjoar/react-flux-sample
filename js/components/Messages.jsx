@@ -46,17 +46,17 @@ export default React.createClass({
             return <p>Spinner</p>
         }
 
-        if (messages.length == 0) {
+        if (messages.count() == 0) {
             return <p>Ingen meldinger</p>
         }
 
-        return <ul>
+        return <ul className="messages">
             { messages.map(this.renderMessage) }
         </ul>
     },
 
     renderMessage(message) {
-        return <li key={ message.fields.id }>
+        return <li key={ message.getIn(['fields', 'id']) }>
             <Message message={ message }/>
         </li>
     },

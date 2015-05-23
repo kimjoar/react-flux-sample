@@ -61,12 +61,10 @@ Dispatcher.register(function(action) {
 export default MessagesStore;
 
 function addMessage(message) {
-    // We create a copy of existing messages, but exclude the one
-    // we want to add if its already in the list
-    let newMessages = _.reject(messages, m => m.cid == message.cid);
-    // We then add our message
-    newMessages.push(message);
-    // ... and update the messages
-    messages = newMessages;
+    messages = messages
+        // Exclude the message we're adding if its already in the list
+        .filterNot(m => m.get('cid') == message.get('cid'))
+        // We then add our message
+        .push(message);
 }
 
