@@ -5,27 +5,29 @@ import Dispatcher from '../dispatcher/Dispatcher';
 
 export default {
 
-    fetchAll() {
+    fetchAll(channel) {
         console.log('ACTION', 'fetch all messages');
 
-        ajax.get('/messages').then(
+        ajax.get('/messages/' + channel).then(
             messages => {
                 Dispatcher.dispatch({
                     type: 'receive_messages',
+                    channel: channel,
                     messages: Immutable.fromJS(messages)
                 });
             });
     },
 
-    create(message) {
-        console.log('ACTION', 'saving message:', message.fields);
+    create(channel, message) {
+        console.log('ACTION', 'saving message:', message.get('fields').toJS());
 
-        ajax.post('/message', message.get('fields').toJS()).then(
+        ajax.post('/message/' + channel, message.get('fields').toJS()).then(
             newFields => {
                 console.log('ACTION', 'save successful:', newFields);
 
                 Dispatcher.dispatch({
                     type: 'save_message_success',
+                    channel: channel,
                     message: message
                         .set('fields', Immutable.fromJS(newFields))
                         .delete('error')
@@ -36,6 +38,7 @@ export default {
 
                 Dispatcher.dispatch({
                     type: 'save_message_failed',
+                    channel: channel,
                     message: message.set('error', Immutable.fromJS(err))
                 });
             });

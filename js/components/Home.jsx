@@ -11,9 +11,9 @@ export default React.createClass({
         let channel = params.channel || 'general';
 
         return <div>
-            <Channels active={ params.channel } />
-            <Messages />
-            <MessageInput />
+            <Channels active={ channel } />
+            <Messages channel={ channel } />
+            <MessageInput channel={ channel }/>
         </div>
     }
 

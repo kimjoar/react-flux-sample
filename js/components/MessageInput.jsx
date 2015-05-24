@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import React from 'react';
 
 import createMessage from '../lib/createMessage';
@@ -37,11 +36,12 @@ export default React.createClass({
     _save(e) {
         let keyCode = e.keyCode;
         let body = this.state.body;
+        let channel = this.props.channel;
 
         if (keyCode == KEY_CODE_ENTER && body.trim() != '') {
             let message = createMessage({ body: body });
             console.log('INPUT', 'enter pressed, saving:', message);
-            MessagesActionCreator.create(message);
+            MessagesActionCreator.create(channel, message);
             this.setState(this.getInitialState());
         }
     }

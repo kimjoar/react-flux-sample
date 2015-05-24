@@ -22,7 +22,7 @@ export default React.createClass({
             'channel-active': this.props.active === channel
         };
 
-        return <li className={ cx(classes) }>
+        return <li className={ cx(classes) } key={ channel }>
             <Link to='channel' params={{ channel: channel }}>
                 { channel }
             </Link>

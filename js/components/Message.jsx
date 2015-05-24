@@ -28,8 +28,10 @@ export default React.createClass({
 
     _onRetry() {
         let message = this.props.message;
+        let channel = this.props.channel;
+
         console.log('MESSAGE', 'retry', message);
-        MessagesActionCreator.create(message);
+        MessagesActionCreator.create(channel, message);
     }
 
 });

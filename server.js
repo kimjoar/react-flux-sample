@@ -16,19 +16,28 @@ app.use(function(err, req, res, next) {
     res.status(500).send({ error: err.message });
 });
 
-var messages = [{
-    id: "123",
-    body: "Kim Joar tester"
-}];
+var messages = {
+    general: [{
+        id: "123",
+        body: "Kim Joar tester"
+    }]
+};
 
-app.get('/messages', function(req, res) {
-    res.json(messages);
+app.get('/messages/:channel', function(req, res) {
+    var channel = req.params.channel;
+    res.json(messages[channel] || []);
 });
 
-app.post('/message', function(req, res) {
+app.post('/message/:channel', function(req, res) {
+    var channel = req.params.channel;
     var message = req.body;
     message.id = uuid.v4();
-    messages.push(message);
+
+    if (!messages.hasOwnProperty(channel)) {
+        messages[channel] = [];
+    }
+
+    messages[channel].push(message);
 
     res.json(message);
 });

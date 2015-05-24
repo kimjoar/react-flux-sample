@@ -5,13 +5,13 @@ import EventEmitter from 'events';
 import createMessage from '../lib/createMessage';
 import Dispatcher from '../dispatcher/Dispatcher';
 
-let messages = null;
+let messages = {};
 
 // READ API
 const MessagesStore = _.assign({}, EventEmitter.prototype, {
 
-    all: function() {
-        return messages;
+    all: function(channel) {
+        return messages[channel];
     },
 
     emitChange: function() {
@@ -36,18 +36,17 @@ Dispatcher.register(function(action) {
     switch(action.type) {
 
         case 'receive_messages':
-            messages = action.messages.map(createMessage);
-            console.log('STORE', 'messages received:', messages);
+            updateMessages(action.channel, action.messages);
             MessagesStore.emitChange();
             break;
 
         case 'save_message_success':
-            addMessage(action.message);
+            addMessage(action.channel, action.message);
             MessagesStore.emitChange();
             break;
 
         case 'save_message_failed':
-            addMessage(action.message);
+            addMessage(action.channel, action.message);
             MessagesStore.emitChange();
             break;
 
@@ -60,8 +59,13 @@ Dispatcher.register(function(action) {
 
 export default MessagesStore;
 
-function addMessage(message) {
-    messages = messages
+function updateMessages(channel, newMessages) {
+    console.log('STORE', 'messages received:', channel, newMessages.toJS());
+    messages[channel] = newMessages.map(createMessage);
+}
+
+function addMessage(channel, message) {
+    messages[channel] = messages[channel]
         // Exclude the message we're adding if its already in the list
         .filterNot(m => m.get('cid') == message.get('cid'))
         // We then add our message

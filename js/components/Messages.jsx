@@ -8,7 +8,7 @@ import MessagesActionCreator from '../actions/MessagesActionCreator';
 
 function getStateFromStores(props) {
     return {
-        messages: MessagesStore.all()
+        messages: MessagesStore.all(props.channel)
     };
 }
 
@@ -24,7 +24,7 @@ export default React.createClass({
 
         if (this.state.messages == null) {
             console.log('MESSAGES', "no messages, let's fetch");
-            MessagesActionCreator.fetchAll();
+            MessagesActionCreator.fetchAll(this.props.channel);
         }
     },
 
@@ -35,7 +35,13 @@ export default React.createClass({
 
     componentWillReceiveProps(nextProps) {
         console.log('MESSAGES', 'receiving props:', nextProps);
-        this.setState(getStateFromStores(nextProps));
+
+        this.setState(getStateFromStores(nextProps), function() {
+            if (this.state.messages == null) {
+                console.log('MESSAGES', "no messages, let's fetch");
+                MessagesActionCreator.fetchAll(nextProps.channel);
+            }
+        });
     },
 
     componentWillUpdate() {
@@ -59,11 +65,11 @@ export default React.createClass({
     content() {
         let messages = this.state.messages;
 
-        console.log('MESSAGES', 'render:', messages);
-
         if (messages == null) {
             return <Spinner type="large" />
         }
+
+        console.log('MESSAGES', 'render:', messages.toJS());
 
         if (messages.count() == 0) {
             return <p>Ingen meldinger</p>
@@ -76,7 +82,9 @@ export default React.createClass({
 
     renderMessage(message) {
         return <li key={ message.get('cid') }>
-            <Message message={ message }/>
+            <Message
+                message={ message }
+                channel={ this.props.channel } />
         </li>
     },
 
