@@ -21,16 +21,14 @@ export default React.createClass({
         let message = this.props.message;
         let fields = message.get('fields');
 
-        return <div className="failed">
+        return <div className="message message-failed">
             Sending "{ fields.get('body') }" message. <button onClick={ this._onRetry }>Retry</button>
         </div>
     },
 
     _onRetry() {
         let message = this.props.message;
-
-        console.log('retry', message);
-
+        console.log('MESSAGE', 'retry', message);
         MessagesActionCreator.create(message);
     }
 

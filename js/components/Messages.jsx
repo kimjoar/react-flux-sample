@@ -37,6 +37,12 @@ export default React.createClass({
         this.setState(getStateFromStores(nextProps));
     },
 
+    componentDidUpdate: function() {
+        let node = React.findDOMNode(this);
+        console.log(node.scrollHeight);
+        node.scrollTop = node.scrollHeight;
+    },
+
     render() {
         var messages = this.state.messages;
 
@@ -56,7 +62,7 @@ export default React.createClass({
     },
 
     renderMessage(message) {
-        return <li key={ message.getIn(['fields', 'id']) }>
+        return <li key={ message.get('cid') }>
             <Message message={ message }/>
         </li>
     },
