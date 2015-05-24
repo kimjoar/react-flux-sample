@@ -35,18 +35,13 @@ ChannelStore.dispatchToken = Dispatcher.register(function(action) {
     switch(action.type) {
 
         case 'receive_messages':
+        case 'receive_messages_failed':
             // waitFor means that MessagesStore should process
             // this event before it's processed here.
             Dispatcher.waitFor([MessagesStore.dispatchToken]);
 
-            isActive[action.channel] = true;
-            ChannelStore.emitChange();
-            break;
-
-        case 'receive_messages_failed':
-            Dispatcher.waitFor([MessagesStore.dispatchToken]);
-
-            isActive[action.channel] = false;
+            let messages = MessagesStore.all(action.channel);
+            isActive[action.channel] = messages != null;
             ChannelStore.emitChange();
             break;
 
