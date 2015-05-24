@@ -66,6 +66,7 @@ function request(url, obj) {
 // "key" value. We normalize errors to an array.
 function extractErrors(jqXHR) {
     let json = jqXHR.responseJSON;
+
     if (json) {
         if (_.isArray(json)) {
             return _.map(json, createError)
@@ -78,7 +79,7 @@ function extractErrors(jqXHR) {
         throw new Error("Unhandled error message: {}", jqXHR.responseText);
     }
 
-    return [createError({ text: "An error occured", status: jqXHR.status })];
+    return [createError({ message: "An error occured", status: jqXHR.status })];
 }
 
 function createError(item) {

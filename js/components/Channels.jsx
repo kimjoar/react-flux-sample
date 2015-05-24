@@ -17,9 +17,11 @@ export default React.createClass({
     },
 
     channel(channel) {
-        var classes = {
+        let activeChannel = this.props.active;
+
+        let classes = {
             'channel': true,
-            'channel-active': this.props.active === channel
+            'channel-active': activeChannel === channel
         };
 
         return <li className={ cx(classes) } key={ channel }>

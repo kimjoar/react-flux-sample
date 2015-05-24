@@ -25,9 +25,8 @@ export default React.createClass({
         if (prevState.isChannelActive === false && this.state.isChannelActive === true) {
             this.focus();
         }
-
         // If we change channels, focus the input field
-        if (prevProps.channel !== this.props.channel) {
+        else if (prevProps.channel !== this.props.channel) {
             this.focus();
         }
     },
