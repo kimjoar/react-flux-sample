@@ -8,18 +8,18 @@ import Dispatcher from '../dispatcher/Dispatcher';
 
 const cidPath = ['fields', 'cid'];
 
-let messages = {};
-let errors = {};
+let messages = Immutable.Map();
+let errors = Immutable.Map();
 
 // READ API
 const MessagesStore = _.assign({}, EventEmitter.prototype, {
 
     all(channel) {
-        return messages[channel];
+        return messages.get(channel);
     },
 
     error(channel) {
-        return errors[channel];
+        return errors.get(channel);
     },
 
     emitChange() {
@@ -44,13 +44,13 @@ MessagesStore.dispatchToken = Dispatcher.register(action => {
     switch(action.type) {
 
         case 'receive_messages':
-            delete errors[action.channel];
+            errors = errors.delete(action.channel);
             updateMessages(action.channel, action.messages);
             MessagesStore.emitChange();
             break;
 
         case 'receive_messages_failed':
-            errors[action.channel] = action.error;
+            errors = errors.set(action.channel, action.error);
             MessagesStore.emitChange();
             break;
 
@@ -81,19 +81,21 @@ export default MessagesStore;
 // Reset all messages on a channel
 function updateMessages(channel, newMessages) {
     console.log('STORE', 'messages received:', channel, newMessages.toJS());
-    messages[channel] = newMessages.map(createMessage);
+    messages = messages.set(channel, newMessages.map(createMessage));
 }
 
 // Add or update a message on a channel
 function addOrUpdate(channel, message) {
-    if (!messages.hasOwnProperty(channel)) {
-        messages[channel] = Immutable.List();
+    if (!messages.has(channel)) {
+        messages = messages.set(channel, Immutable.List());
     }
 
-    messages[channel] = messages[channel]
+    let newMessages = messages.get(channel)
         // Exclude the message we're adding if its already in the list
         .filterNot(m => m.getIn(cidPath) == message.getIn(cidPath))
         // We then add our message
         .push(message);
+
+    messages = messages.set(channel, newMessages);
 }
 

@@ -6,13 +6,13 @@ import EventEmitter from 'events';
 import Dispatcher from '../dispatcher/Dispatcher';
 import MessagesStore from './MessagesStore';
 
-let isActive = {};
+let isActive = Immutable.Map();
 
 // READ API
 const ChannelStore = _.assign({}, EventEmitter.prototype, {
 
     isActive: function(channel) {
-        return isActive[channel] || false;
+        return isActive.get(channel) || false;
     },
 
     emitChange: function() {
@@ -41,7 +41,7 @@ ChannelStore.dispatchToken = Dispatcher.register(function(action) {
             Dispatcher.waitFor([MessagesStore.dispatchToken]);
 
             let messages = MessagesStore.all(action.channel);
-            isActive[action.channel] = messages != null;
+            isActive = isActive.set(action.channel, messages != null);
             ChannelStore.emitChange();
             break;
 

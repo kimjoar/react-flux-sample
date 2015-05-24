@@ -22,7 +22,7 @@ export default React.createClass({
 
     componentDidUpdate(prevProps, prevState) {
         // If the channel was activated, try to focus the input field
-        if (prevState.isChannelActive === false && this.props.isChannelActive === true) {
+        if (prevState.isChannelActive === false && this.state.isChannelActive === true) {
             this.focus();
         }
 

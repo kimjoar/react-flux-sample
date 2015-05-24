@@ -21,8 +21,8 @@ export default {
             err => {
                 Dispatcher.dispatch({
                     type: 'receive_messages_failed',
-                    error: err,
-                    channel: channel
+                    channel: channel,
+                    error: err
                 });
             });
     },
@@ -54,7 +54,7 @@ export default {
     },
 
     connect() {
-        var socket = io('http://localhost:9999');
+        const socket = io();
         socket.on('message', data => {
             console.log('ACTION', 'receive WS', data);
             Dispatcher.dispatch({
