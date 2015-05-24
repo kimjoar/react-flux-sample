@@ -19,13 +19,14 @@ export default React.createClass({
     },
 
     render() {
-        return <input
-            className='chat-input'
-            ref='chatInput'
-            type='text'
-            value={ this.state.body }
-            onChange={ this._onChange }
-            onKeyUp={ this._save }/>
+        return <div className='chat-input'>
+            <input
+                ref='chatInput'
+                type='text'
+                value={ this.state.body }
+                onChange={ this._onChange }
+                onKeyUp={ this._save }/>
+        </div>
     },
 
     _onChange(e) {

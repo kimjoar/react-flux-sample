@@ -7,8 +7,12 @@ import { Route, DefaultRoute } from 'react-router';
 import App from './components/App';
 import Home from './components/Home';
 
-const routes = <Route handler={ App } path="/">
+const routes = <Route path='/' handler={ App }>
     <DefaultRoute handler={ Home } />
+    <Route
+        name='channel'
+        path='channel/:channel'
+        handler={ Home } />
 </Route>
 
 Router.run(routes, Router.HistoryLocation, (Root, state) => {
