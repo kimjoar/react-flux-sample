@@ -5,5 +5,21 @@ html {
   box-sizing: inherit;
 }
 
+body {
+    margin: 0;
+}
+
+header {
+    background-color: #000;
+    padding: 0.25rem;
+    color: #fff;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
 @import "spinner.css";
 @import "chat.css";

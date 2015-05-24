@@ -8,6 +8,10 @@ export default React.createClass({
 
     render() {
         return <div>
+            <ul className="channels">
+                <li className="channel">general</li>
+                <li className="channel">random</li>
+            </ul>
             <Messages { ...this.props } />
             <MessageInput />
         </div>
