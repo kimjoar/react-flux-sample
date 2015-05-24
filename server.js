@@ -18,8 +18,8 @@ app.use(function(err, req, res, next) {
 
 var messages = {
     general: [{
-        id: "123",
-        body: "Kim Joar tester"
+        id: uuid.v4(),
+        body: "Welcome to the chat"
     }]
 };
 

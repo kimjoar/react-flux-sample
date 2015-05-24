@@ -21,9 +21,9 @@ export default React.createClass({
         }
 
         let type = this.props.type;
-        let classes = { "u-spinner": true };
+        let classes = { 'u-spinner': true };
         if (type != null) {
-            classes["u-spinner--" + type] = true;
+            classes['u-spinner--' + type] = true;
         }
 
         return <div className={ cx(classes) } />

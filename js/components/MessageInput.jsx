@@ -2,10 +2,13 @@ import React from 'react';
 
 import createMessage from '../lib/createMessage';
 import MessagesActionCreator from '../actions/MessagesActionCreator';
+import ActiveChannelMixin from '../lib/ActiveChannelMixin';
 
 const KEY_CODE_ENTER = 13;
 
 export default React.createClass({
+
+    mixins: [ActiveChannelMixin],
 
     getInitialState() {
         return {
@@ -14,17 +17,36 @@ export default React.createClass({
     },
 
     componentDidMount() {
-        React.findDOMNode(this.refs.chatInput).focus();
+        this.focus();
+    },
+
+    componentDidUpdate(prevProps, prevState) {
+        // If the channel was activated, try to focus the input field
+        if (prevState.isChannelActive === false && this.props.isChannelActive === true) {
+            this.focus();
+        }
+
+        // If we change channels, focus the input field
+        if (prevProps.channel !== this.props.channel) {
+            this.focus();
+        }
     },
 
     render() {
+        // We don't allow the user to write before a channel
+        // is active, i.e. before we have received data from
+        // the server.
+        let isChannelActive = this.state.isChannelActive;
+
         return <div className='chat-input'>
             <input
                 ref='chatInput'
                 type='text'
                 value={ this.state.body }
+                disabled={ !isChannelActive }
                 onChange={ this._onChange }
-                onKeyUp={ this._save }/>
+                onKeyUp={ this._save }
+                />
         </div>
     },
 
@@ -40,10 +62,14 @@ export default React.createClass({
 
         if (keyCode == KEY_CODE_ENTER && body.trim() != '') {
             let message = createMessage({ body: body });
-            console.log('INPUT', 'enter pressed, saving:', message);
+            console.log('INPUT', 'enter pressed, saving:', message.toJS());
             MessagesActionCreator.create(channel, message);
             this.setState(this.getInitialState());
         }
+    },
+
+    focus() {
+        React.findDOMNode(this.refs.chatInput).focus();
     }
 
 });

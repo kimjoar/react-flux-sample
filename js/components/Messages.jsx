@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 
+import Alert from './Alert';
 import Spinner from './Spinner';
 import Message from './Message';
 import MessagesStore from '../stores/MessagesStore';
@@ -8,7 +9,8 @@ import MessagesActionCreator from '../actions/MessagesActionCreator';
 
 function getStateFromStores(props) {
     return {
-        messages: MessagesStore.all(props.channel)
+        messages: MessagesStore.all(props.channel),
+        error: MessagesStore.error(props.channel)
     };
 }
 
@@ -45,7 +47,7 @@ export default React.createClass({
     },
 
     componentWillUpdate() {
-        let node = this.getDOMNode();
+        let node = React.findDOMNode(this);
         this.shouldScrollBottom = (node.scrollTop + node.offsetHeight) === node.scrollHeight;
     },
 
@@ -57,25 +59,32 @@ export default React.createClass({
     },
 
     render() {
-        return <div className="chat">
+        return <div className='chat'>
             { this.content() }
         </div>
     },
 
     content() {
         let messages = this.state.messages;
+        let error = this.state.error;
 
-        if (messages == null) {
-            return <Spinner type="large" />
+        if (error != null) {
+            return <Alert>
+                Fetching messages for channel '{ this.props.channel }' failed.
+            </Alert>
         }
 
-        console.log('MESSAGES', 'render:', messages.toJS());
+        if (messages == null) {
+            return <Spinner type='large' />
+        }
+
+        console.log('MESSAGES', 'render:', messages && messages.toJS());
 
         if (messages.count() == 0) {
             return <p>Ingen meldinger</p>
         }
 
-        return <ul className="messages">
+        return <ul className='messages'>
             { messages.map(this.renderMessage) }
         </ul>
     },

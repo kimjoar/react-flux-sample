@@ -12,7 +12,7 @@ export default React.createClass({
             return this.renderFailed();
         }
 
-        return <div className="message">
+        return <div className='message'>
             { fields.get('body') }
         </div>
     },
@@ -21,7 +21,7 @@ export default React.createClass({
         let message = this.props.message;
         let fields = message.get('fields');
 
-        return <div className="message message-failed">
+        return <div className='message message-failed'>
             Sending "{ fields.get('body') }" message. <button onClick={ this._onRetry }>Retry</button>
         </div>
     },

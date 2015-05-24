@@ -22,4 +22,5 @@ header h1 {
 }
 
 @import "spinner.css";
+@import "alerts.css";
 @import "chat.css";

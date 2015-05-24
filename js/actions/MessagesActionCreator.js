@@ -15,6 +15,13 @@ export default {
                     channel: channel,
                     messages: Immutable.fromJS(messages)
                 });
+            },
+            err => {
+                Dispatcher.dispatch({
+                    type: 'receive_messages_failed',
+                    error: err,
+                    channel: channel
+                });
             });
     },
 
@@ -38,6 +45,7 @@ export default {
 
                 Dispatcher.dispatch({
                     type: 'save_message_failed',
+                    error: err,
                     channel: channel,
                     message: message.set('error', Immutable.fromJS(err))
                 });
