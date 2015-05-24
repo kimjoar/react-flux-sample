@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 
+import Spinner from './Spinner';
 import Message from './Message';
 import MessagesStore from '../stores/MessagesStore';
 import MessagesActionCreator from '../actions/MessagesActionCreator';
@@ -37,19 +38,31 @@ export default React.createClass({
         this.setState(getStateFromStores(nextProps));
     },
 
-    componentDidUpdate: function() {
-        let node = React.findDOMNode(this);
-        console.log(node.scrollHeight);
-        node.scrollTop = node.scrollHeight;
+    componentWillUpdate() {
+        let node = this.getDOMNode();
+        this.shouldScrollBottom = (node.scrollTop + node.offsetHeight) === node.scrollHeight;
+    },
+
+    componentDidUpdate() {
+        if (this.shouldScrollBottom) {
+            let node = React.findDOMNode(this);
+            node.scrollTop = node.scrollHeight;
+        }
     },
 
     render() {
-        var messages = this.state.messages;
+        return <div className="chat">
+            { this.content() }
+        </div>
+    },
+
+    content() {
+        let messages = this.state.messages;
 
         console.log('MESSAGES', 'render:', messages);
 
         if (messages == null) {
-            return <p>Spinner</p>
+            return <Spinner type="large" />
         }
 
         if (messages.count() == 0) {
