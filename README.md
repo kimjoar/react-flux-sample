@@ -1,17 +1,14 @@
-Start med
+# Flux-based Chat Application
 
-```
-npm install
-npm install -g gulp
+This is a starting point showing how a Flux-based application can be implemented.
 
-gulp watch
-```
+## Getting started
 
-Så i en annen terminal:
-
-```
-node app.js
+```sh
+$ npm install
+$ npm build
+$ npm run start
 ```
 
-Gå til http://localhost:9999/
+Go to http://localhost:9999/
 
