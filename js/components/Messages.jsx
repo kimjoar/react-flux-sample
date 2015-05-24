@@ -90,7 +90,7 @@ export default React.createClass({
     },
 
     renderMessage(message) {
-        return <li key={ message.get('cid') }>
+        return <li key={ message.getIn(['fields', 'cid']) }>
             <Message
                 message={ message }
                 channel={ this.props.channel } />

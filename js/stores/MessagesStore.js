@@ -6,59 +6,66 @@ import EventEmitter from 'events';
 import createMessage from '../lib/createMessage';
 import Dispatcher from '../dispatcher/Dispatcher';
 
+const cidPath = ['fields', 'cid'];
+
 let messages = {};
-let failedFetch = {};
+let errors = {};
 
 // READ API
 const MessagesStore = _.assign({}, EventEmitter.prototype, {
 
-    all: function(channel) {
+    all(channel) {
         return messages[channel];
     },
 
-    error: function(channel) {
-        return failedFetch[channel];
+    error(channel) {
+        return errors[channel];
     },
 
-    emitChange: function() {
+    emitChange() {
         this.emit('change');
     },
 
-    addChangeListener: function(callback) {
+    addChangeListener(callback) {
         this.on('change', callback);
     },
 
-    removeChangeListener: function(callback) {
+    removeChangeListener(callback) {
         this.removeListener('change', callback);
-    }
+    },
 
 });
 
 // WRITE API
-MessagesStore.dispatchToken = Dispatcher.register(function(action) {
+MessagesStore.dispatchToken = Dispatcher.register(action => {
 
     console.log('STORE', 'received action:', action);
 
     switch(action.type) {
 
         case 'receive_messages':
-            delete failedFetch[action.channel];
+            delete errors[action.channel];
             updateMessages(action.channel, action.messages);
             MessagesStore.emitChange();
             break;
 
         case 'receive_messages_failed':
-            failedFetch[action.channel] = action.error;
+            errors[action.channel] = action.error;
+            MessagesStore.emitChange();
+            break;
+
+        case 'receive_message':
+            addOrUpdate(action.channel, action.message);
             MessagesStore.emitChange();
             break;
 
         case 'save_message_success':
-            addMessage(action.channel, action.message);
+            addOrUpdate(action.channel, action.message.delete('error'));
             MessagesStore.emitChange();
             break;
 
         case 'save_message_failed':
-            addMessage(action.channel, action.message);
+            addOrUpdate(action.channel, action.message.set('error', action.error));
             MessagesStore.emitChange();
             break;
 
@@ -71,19 +78,21 @@ MessagesStore.dispatchToken = Dispatcher.register(function(action) {
 
 export default MessagesStore;
 
+// Reset all messages on a channel
 function updateMessages(channel, newMessages) {
     console.log('STORE', 'messages received:', channel, newMessages.toJS());
     messages[channel] = newMessages.map(createMessage);
 }
 
-function addMessage(channel, message) {
+// Add or update a message on a channel
+function addOrUpdate(channel, message) {
     if (!messages.hasOwnProperty(channel)) {
         messages[channel] = Immutable.List();
     }
 
     messages[channel] = messages[channel]
         // Exclude the message we're adding if its already in the list
-        .filterNot(m => m.get('cid') == message.get('cid'))
+        .filterNot(m => m.getIn(cidPath) == message.getIn(cidPath))
         // We then add our message
         .push(message);
 }

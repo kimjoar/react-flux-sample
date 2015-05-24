@@ -1,7 +1,12 @@
 import React from 'react';
 import { RouteHandler } from 'react-router';
+import MessagesActionCreator from '../actions/MessagesActionCreator';
 
 export default React.createClass({
+
+    componentDidMount() {
+        MessagesActionCreator.connect();
+    },
 
     render() {
         return <div>

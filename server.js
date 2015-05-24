@@ -2,6 +2,7 @@ var _ = require('lodash');
 var http = require('http');
 var uuid = require('node-uuid');
 var express = require('express');
+var socketio = require('socket.io');
 var bodyParser = require('body-parser');
 var history = require('connect-history-api-fallback');
 
@@ -16,9 +17,13 @@ app.use(function(err, req, res, next) {
     res.status(500).send({ error: err.message });
 });
 
+var server = http.createServer(app);
+var io = socketio(server);
+
 var messages = {
     general: [{
         id: uuid.v4(),
+        cid: uuid.v4(),
         body: "Welcome to the chat"
     }]
 };
@@ -40,27 +45,13 @@ app.post('/message/:channel', function(req, res) {
     messages[channel].push(message);
 
     res.json(message);
+    io.emit('message', {
+        channel: channel,
+        message: message
+    });
 });
 
-app.route('/message/:id')
-    .put(function(req, res) {
-        var id = req.params.id;
-        var newMessage = req.body;
-
-        var message = _.where(messages, { id: id });
-        _.assign(message, newMessage);
-
-        res.json(messages[id]);
-    })
-    .delete(function(req, res) {
-        var id = req.params.id;
-        delete messages[id];
-
-        res.status(204).end();
-    });
-
-http.createServer(app)
-    .listen(9999, function() {
-        console.log('Running on port 9999');
-    });
+server.listen(9999, function() {
+    console.log('Running on port 9999');
+});
 

@@ -1,7 +1,9 @@
 import Immutable from 'immutable';
+import io from 'socket.io-client';
 
 import ajax from '../lib/ajax';
 import Dispatcher from '../dispatcher/Dispatcher';
+import createMessage from '../lib/createMessage';
 
 export default {
 
@@ -29,15 +31,14 @@ export default {
         console.log('ACTION', 'saving message:', message.get('fields').toJS());
 
         ajax.post('/message/' + channel, message.get('fields').toJS()).then(
-            newFields => {
-                console.log('ACTION', 'save successful:', newFields);
+            res => {
+                let fields = Immutable.fromJS(res);
+                console.log('ACTION', 'save successful:', res);
 
                 Dispatcher.dispatch({
                     type: 'save_message_success',
                     channel: channel,
-                    message: message
-                        .set('fields', Immutable.fromJS(newFields))
-                        .delete('error')
+                    message: message.set('fields', fields)
                 });
             },
             err => {
@@ -47,9 +48,21 @@ export default {
                     type: 'save_message_failed',
                     error: err,
                     channel: channel,
-                    message: message.set('error', Immutable.fromJS(err))
+                    message: message
                 });
             });
+    },
+
+    connect() {
+        var socket = io('http://localhost:9999');
+        socket.on('message', data => {
+            console.log('ACTION', 'receive WS', data);
+            Dispatcher.dispatch({
+                type: 'receive_message',
+                channel: data.channel,
+                message: createMessage(data.message)
+            });
+        });
     }
 
 };
