@@ -1,7 +1,10 @@
 {
   "name": "react-setup",
   "scripts": {
-    "test": ""
+    "start": "node server.js",
+    "server-watch": "nodemon server.js -w server.js",
+    "build": "gulp",
+    "watch": "gulp watch"
   },
   "dependencies": {
     "babel": "^5.4.7",
