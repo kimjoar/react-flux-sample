@@ -5,7 +5,7 @@ import MessagesActionCreator from '../actions/MessagesActionCreator';
 export default React.createClass({
 
     componentDidMount() {
-        MessagesActionCreator.connect();
+        // TODO: Connect to WebSocket endpoint and listen for `message` events.
     },
 
     render() {

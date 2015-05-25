@@ -8,8 +8,6 @@ const KEY_CODE_ENTER = 13;
 
 export default React.createClass({
 
-    mixins: [ActiveChannelMixin],
-
     propTypes: {
         // The current channel
         channel: React.PropTypes.string.isRequired
@@ -25,29 +23,12 @@ export default React.createClass({
         this.focus();
     },
 
-    componentDidUpdate(prevProps, prevState) {
-        // If the channel was activated, try to focus the input field
-        if (prevState.isChannelActive === false && this.state.isChannelActive === true) {
-            this.focus();
-        }
-        // If we change channels, focus the input field
-        else if (prevProps.channel !== this.props.channel) {
-            this.focus();
-        }
-    },
-
     render() {
-        // We don't allow the user to write before a channel
-        // is active, i.e. before we have received data from
-        // the server.
-        let isChannelActive = this.state.isChannelActive;
-
         return <div className='chat-input'>
             <input
                 ref='chatInput'
                 type='text'
                 value={ this.state.body }
-                disabled={ !isChannelActive }
                 onChange={ this._onChange }
                 onKeyUp={ this._save }
                 />
@@ -71,7 +52,8 @@ export default React.createClass({
             let message = createMessage({ body: body });
 
             console.log('INPUT', 'enter pressed, saving:', message.toJS());
-            MessagesActionCreator.create(channel, message);
+
+            // TODO: Create action that saves message
 
             // Reset input state
             this.setState(this.getInitialState());

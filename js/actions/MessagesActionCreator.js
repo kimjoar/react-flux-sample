@@ -22,42 +22,15 @@ export default {
                 let newFields = Immutable.fromJS(res);
                 message = message.set('fields', newFields);
 
-                Dispatcher.dispatch({
-                    type: 'save_message_success',
-                    channel: channel,
-                    message: message
-                });
-            },
-            err => {
-                console.log('ACTION', 'save failed:', err);
-
-                Dispatcher.dispatch({
-                    type: 'save_message_failed',
-                    error: err,
-                    channel: channel,
-                    message: message
-                });
+                // TODO: Dispatch message to stores
             });
     },
 
     fetchAll(channel) {
         console.log('ACTION', 'fetch all messages for channel:', channel);
 
-        ajax.get('/messages/' + channel).then(
-            messages => {
-                Dispatcher.dispatch({
-                    type: 'receive_messages',
-                    channel: channel,
-                    messages: Immutable.fromJS(messages)
-                });
-            },
-            err => {
-                Dispatcher.dispatch({
-                    type: 'receive_messages_failed',
-                    channel: channel,
-                    error: err
-                });
-            });
+        // TODO: Fetch all messages from `/messages/<channel>`
+        // and dispatch 'receive_messages'
     },
 
     connect() {

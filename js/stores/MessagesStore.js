@@ -13,7 +13,6 @@ const cidPath = ['fields', 'cid'];
 // have full control over changing it.
 
 let messages = Map();
-let errors = Map();
 
 // READ API
 //
@@ -29,11 +28,6 @@ const MessagesStore = _.assign({}, EventEmitter.prototype, {
     // Return all messages on a channel
     all(channel) {
         return messages.get(channel);
-    },
-
-    // Return all errors on a channel
-    error(channel) {
-        return errors.get(channel);
     },
 
     // Every time make a change to the store,
@@ -66,29 +60,18 @@ Dispatcher.register(action => {
     switch(action.type) {
 
         case 'receive_messages':
-            removeErrorFromChannel(action.channel);
-            updateMessages(action.channel, action.messages);
-            MessagesStore.emitChange();
             break;
 
         case 'receive_messages_failed':
-            setErrorOnChannel(action.channel, action.error);
-            MessagesStore.emitChange();
             break;
 
         case 'receive_message':
-            addOrUpdateMessage(action.channel, action.message);
-            MessagesStore.emitChange();
             break;
 
         case 'save_message_success':
-            addOrUpdateMessage(action.channel, action.message.delete('error'));
-            MessagesStore.emitChange();
             break;
 
         case 'save_message_failed':
-            addOrUpdateMessage(action.channel, action.message.set('error', action.error));
-            MessagesStore.emitChange();
             break;
 
         default:
@@ -123,11 +106,9 @@ function addOrUpdateMessage(channel, message) {
 
 function setErrorOnChannel(channel, error) {
     console.log('STORE', 'setting error on channel', channel);
-    errors = errors.set(channel, error);
 }
 
 function removeErrorFromChannel(channel) {
     console.log('STORE', 'removing error on channel', channel);
-    errors = errors.delete(channel);
 }
 
