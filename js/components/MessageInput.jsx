@@ -10,6 +10,11 @@ export default React.createClass({
 
     mixins: [ActiveChannelMixin],
 
+    propTypes: {
+        // The current channel
+        channel: React.PropTypes.string.isRequired
+    },
+
     getInitialState() {
         return {
             body: ''

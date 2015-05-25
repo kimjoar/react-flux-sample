@@ -4,6 +4,11 @@ import { Link } from 'react-router';
 
 export default React.createClass({
 
+    propTypes: {
+        // The currently active channel
+        active: React.PropTypes.string.isRequired
+    },
+
     getInitialState() {
         return {
             channels: ['general', 'random']

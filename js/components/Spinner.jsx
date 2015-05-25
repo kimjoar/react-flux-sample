@@ -4,7 +4,11 @@ import React from 'react';
 export default React.createClass({
 
     propTypes: {
+        // Whether or not to display a spinner
         spin: React.PropTypes.bool,
+
+        // Which type of spinner to display.
+        // Alternatives defined in `spinner.css`.
         type: React.PropTypes.string
     },
 

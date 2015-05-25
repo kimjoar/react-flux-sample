@@ -16,6 +16,11 @@ function getStateFromStores(props) {
 
 export default React.createClass({
 
+    propTypes: {
+        // The current channel
+        channel: React.PropTypes.string.isRequired
+    },
+
     getInitialState() {
         return getStateFromStores(this.props);
     },

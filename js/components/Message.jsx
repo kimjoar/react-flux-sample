@@ -1,8 +1,16 @@
 import React from 'react';
+import Immutable from 'immutable';
 
 import MessagesActionCreator from '../actions/MessagesActionCreator';
 
 export default React.createClass({
+
+    propTypes: {
+        // The message to display
+        message: isMessage,
+        // The current channel
+        channel: React.PropTypes.string.isRequired
+    },
 
     render() {
         let message = this.props.message;
@@ -35,3 +43,16 @@ export default React.createClass({
     }
 
 });
+
+function isMessage(props, propName, componentName) {
+    let prop = props[propName];
+    if (!(prop instanceof Immutable.Map)) {
+        return new Error('Not an immutable map');
+    }
+    if (!prop.has('fields')) {
+        return new Error('No fields');
+    }
+    if (!prop.get('fields').has('body')) {
+        return new Error('No message body');
+    }
+}
