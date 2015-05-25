@@ -45,10 +45,13 @@ export default {
 
         ajax.get('/messages/' + channel).then(
             messages => {
+                messages = Immutable.fromJS(messages)
+                        .map(createMessage);
+
                 Dispatcher.dispatch({
                     type: 'receive_messages',
                     channel: channel,
-                    messages: Immutable.fromJS(messages)
+                    messages: messages
                 });
             },
             err => {
