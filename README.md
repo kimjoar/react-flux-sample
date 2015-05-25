@@ -6,9 +6,17 @@ This is a starting point showing how a Flux-based application can be implemented
 
 ```sh
 $ npm install
-$ npm run build
-$ npm run start
+$ npm start
 ```
 
 Go to http://localhost:9999/
 
+## Development
+
+```sh
+# Frontend development
+$ npm run watch
+
+# Backend development
+$ npm run server-watch
+```
