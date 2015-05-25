@@ -8,10 +8,22 @@ import Dispatcher from '../dispatcher/Dispatcher';
 
 const cidPath = ['fields', 'cid'];
 
+// All the state for this store exists outside the code
+// that is exported from this file, so we know that we
+// have full control over changing it.
+
 let messages = Immutable.Map();
 let errors = Immutable.Map();
 
 // READ API
+//
+// We create a regular object that inherits from EventEmitter.
+// This gives is methods such as `on` and `emit` to register
+// and emit events. Usually we only use a `change` event,
+// therefore we have special helpers for this case.
+//
+// This object _only_ contain read APIs, i.e. it should have
+// no methods that changes `messages`.
 const MessagesStore = _.assign({}, EventEmitter.prototype, {
 
     // Return all messages on a channel
@@ -24,6 +36,8 @@ const MessagesStore = _.assign({}, EventEmitter.prototype, {
         return errors.get(channel);
     },
 
+    // Every time make a change to the store,
+    // use this method to notify listeners
     emitChange() {
         this.emit('change');
     },
@@ -39,7 +53,13 @@ const MessagesStore = _.assign({}, EventEmitter.prototype, {
 });
 
 // WRITE API
-MessagesStore.dispatchToken = Dispatcher.register(action => {
+//
+// We can change the state of the store through actions that
+// are dispatched and received here.
+//
+// We must always remember to trigger `emitChange` after changing
+// the state.
+Dispatcher.register(action => {
 
     console.log('STORE', 'received action:', action);
 

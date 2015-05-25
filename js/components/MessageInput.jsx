@@ -65,9 +65,15 @@ export default React.createClass({
         let channel = this.props.channel;
 
         if (keyCode == KEY_CODE_ENTER && body.trim() != '') {
+            // We wrap the body in a message object
+            // This returns an Immutable.js Map:
+            // https://facebook.github.io/immutable-js/docs/#/Map
             let message = createMessage({ body: body });
+
             console.log('INPUT', 'enter pressed, saving:', message.toJS());
             MessagesActionCreator.create(channel, message);
+
+            // Reset input state
             this.setState(this.getInitialState());
         }
     },

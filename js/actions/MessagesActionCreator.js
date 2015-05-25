@@ -7,15 +7,20 @@ import createMessage from '../lib/createMessage';
 
 export default {
 
+    // Save a message in a channel
     create(channel, message) {
-        console.log('ACTION', 'saving message:', message.get('fields').toJS());
+        // We extract the fields on the message and transform it into a regular
+        // JavaScript object instead of an Immutable Map.
+        let fields = message.get('fields').toJS();
 
-        ajax.post('/message/' + channel, message.get('fields').toJS()).then(
+        console.log('ACTION', 'saving message:', fields);
+
+        ajax.post('/message/' + channel, fields).then(
             res => {
                 console.log('ACTION', 'save successful:', res);
 
-                let fields = Immutable.fromJS(res);
-                message = message.set('fields', fields);
+                let newFields = Immutable.fromJS(res);
+                message = message.set('fields', newFields);
 
                 Dispatcher.dispatch({
                     type: 'save_message_success',
@@ -54,7 +59,6 @@ export default {
                 });
             });
     },
-
 
     connect() {
         const socket = io();
