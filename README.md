@@ -6,7 +6,7 @@ This is a starting point showing how a Flux-based application can be implemented
 
 ```sh
 $ npm install
-$ npm build
+$ npm run build
 $ npm run start
 ```
 
