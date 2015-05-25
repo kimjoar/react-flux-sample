@@ -40,7 +40,7 @@ export default React.createClass({
 
         console.log('MESSAGE', 'retry', message);
 
-        // TODO: Use action for saving message to retry
+        MessagesActionCreator.create(channel, message);
     }
 
 });

@@ -59,7 +59,7 @@ const MessagesStore = _.assign({}, EventEmitter.prototype, {
 //
 // We must always remember to trigger `emitChange` after changing
 // the state.
-Dispatcher.register(action => {
+MessagesStore.dispatchToken = Dispatcher.register(action => {
 
     console.log('STORE', 'received action:', action);
 
