@@ -1,12 +1,12 @@
 import _ from 'lodash';
 import uuid from 'node-uuid';
-import Immutable from 'immutable';
+import { Map } from 'immutable';
 import EventEmitter from 'events';
 
 import Dispatcher from '../dispatcher/Dispatcher';
 import MessagesStore from './MessagesStore';
 
-let isActive = Immutable.Map();
+let isActive = Map();
 
 // READ API
 const ChannelStore = _.assign({}, EventEmitter.prototype, {

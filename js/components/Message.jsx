@@ -1,5 +1,5 @@
 import React from 'react';
-import Immutable from 'immutable';
+import { Map } from 'immutable';
 
 import MessagesActionCreator from '../actions/MessagesActionCreator';
 
@@ -39,14 +39,15 @@ export default React.createClass({
         let channel = this.props.channel;
 
         console.log('MESSAGE', 'retry', message);
-        MessagesActionCreator.create(channel, message);
+
+        // TODO: Use action for saving message to retry
     }
 
 });
 
 function isMessage(props, propName, componentName) {
     let prop = props[propName];
-    if (!(prop instanceof Immutable.Map)) {
+    if (!(prop instanceof Map)) {
         return new Error('Not an immutable map');
     }
     if (!prop.has('fields')) {

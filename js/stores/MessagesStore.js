@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import uuid from 'node-uuid';
-import Immutable from 'immutable';
+import { Map, List } from 'immutable';
 import EventEmitter from 'events';
 
 import createMessage from '../lib/createMessage';
@@ -12,8 +12,8 @@ const cidPath = ['fields', 'cid'];
 // that is exported from this file, so we know that we
 // have full control over changing it.
 
-let messages = Immutable.Map();
-let errors = Immutable.Map();
+let messages = Map();
+let errors = Map();
 
 // READ API
 //
@@ -109,7 +109,7 @@ function updateMessages(channel, newMessages) {
 // Add or update a message on a channel
 function addOrUpdateMessage(channel, message) {
     if (!messages.has(channel)) {
-        messages = messages.set(channel, Immutable.List());
+        messages = messages.set(channel, List());
     }
 
     let newMessages = messages.get(channel)
