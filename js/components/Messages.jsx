@@ -78,7 +78,7 @@ export default React.createClass({
             return <Spinner type='large' />
         }
 
-        console.log('MESSAGES', 'render:', messages && messages.toJS());
+        console.log('MESSAGES', 'rendering', messages && messages.count());
 
         if (messages.count() == 0) {
             return <p>Ingen meldinger</p>

@@ -8,7 +8,7 @@ import createMessage from '../lib/createMessage';
 export default {
 
     fetchAll(channel) {
-        console.log('ACTION', 'fetch all messages');
+        console.log('ACTION', 'fetch all messages for channel:', channel);
 
         ajax.get('/messages/' + channel).then(
             messages => {

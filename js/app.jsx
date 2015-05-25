@@ -9,17 +9,12 @@ import Chat from './components/Chat';
 
 const routes = <Route path='/' handler={ App }>
     <DefaultRoute handler={ Chat } />
-    <Route
-        name='channel'
-        path='channel/:channel'
-        handler={ Chat } />
+    <Route name='channel' path='channel/:channel' handler={ Chat } />
 </Route>
 
 Router.run(routes, Router.HistoryLocation, (Root, state) => {
     React.render(
-        <Root
-            params={ state.params }
-            query={ state.query } />,
+        <Root params={ state.params } query={ state.query } />,
         document.body
     );
 });

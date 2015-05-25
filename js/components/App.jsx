@@ -9,11 +9,15 @@ export default React.createClass({
     },
 
     render() {
+        // We call the route and pass along all the props
+        // passed to this component
+        let route = <RouteHandler { ...this.props } />
+
         return <div>
             <header>
                 <h1>Chat!</h1>
             </header>
-            <RouteHandler { ...this.props } />
+            { route }
         </div>
     }
 
