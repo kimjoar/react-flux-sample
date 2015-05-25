@@ -7,6 +7,34 @@ import createMessage from '../lib/createMessage';
 
 export default {
 
+    create(channel, message) {
+        console.log('ACTION', 'saving message:', message.get('fields').toJS());
+
+        ajax.post('/message/' + channel, message.get('fields').toJS()).then(
+            res => {
+                console.log('ACTION', 'save successful:', res);
+
+                let fields = Immutable.fromJS(res);
+                message = message.set('fields', fields);
+
+                Dispatcher.dispatch({
+                    type: 'save_message_success',
+                    channel: channel,
+                    message: message
+                });
+            },
+            err => {
+                console.log('ACTION', 'save failed:', err);
+
+                Dispatcher.dispatch({
+                    type: 'save_message_failed',
+                    error: err,
+                    channel: channel,
+                    message: message
+                });
+            });
+    },
+
     fetchAll(channel) {
         console.log('ACTION', 'fetch all messages for channel:', channel);
 
@@ -27,31 +55,6 @@ export default {
             });
     },
 
-    create(channel, message) {
-        console.log('ACTION', 'saving message:', message.get('fields').toJS());
-
-        ajax.post('/message/' + channel, message.get('fields').toJS()).then(
-            res => {
-                let fields = Immutable.fromJS(res);
-                console.log('ACTION', 'save successful:', res);
-
-                Dispatcher.dispatch({
-                    type: 'save_message_success',
-                    channel: channel,
-                    message: message.set('fields', fields)
-                });
-            },
-            err => {
-                console.log('ACTION', 'save failed:', err);
-
-                Dispatcher.dispatch({
-                    type: 'save_message_failed',
-                    error: err,
-                    channel: channel,
-                    message: message
-                });
-            });
-    },
 
     connect() {
         const socket = io();
