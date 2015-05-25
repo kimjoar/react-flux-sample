@@ -14,10 +14,12 @@ let errors = Immutable.Map();
 // READ API
 const MessagesStore = _.assign({}, EventEmitter.prototype, {
 
+    // Return all messages on a channel
     all(channel) {
         return messages.get(channel);
     },
 
+    // Return all errors on a channel
     error(channel) {
         return errors.get(channel);
     },
@@ -44,28 +46,28 @@ MessagesStore.dispatchToken = Dispatcher.register(action => {
     switch(action.type) {
 
         case 'receive_messages':
-            errors = errors.delete(action.channel);
+            removeErrorFromChannel(action.channel);
             updateMessages(action.channel, action.messages);
             MessagesStore.emitChange();
             break;
 
         case 'receive_messages_failed':
-            errors = errors.set(action.channel, action.error);
+            setErrorOnChannel(action.channel, action.error);
             MessagesStore.emitChange();
             break;
 
         case 'receive_message':
-            addOrUpdate(action.channel, action.message);
+            addOrUpdateMessage(action.channel, action.message);
             MessagesStore.emitChange();
             break;
 
         case 'save_message_success':
-            addOrUpdate(action.channel, action.message.delete('error'));
+            addOrUpdateMessage(action.channel, action.message.delete('error'));
             MessagesStore.emitChange();
             break;
 
         case 'save_message_failed':
-            addOrUpdate(action.channel, action.message.set('error', action.error));
+            addOrUpdateMessage(action.channel, action.message.set('error', action.error));
             MessagesStore.emitChange();
             break;
 
@@ -85,7 +87,7 @@ function updateMessages(channel, newMessages) {
 }
 
 // Add or update a message on a channel
-function addOrUpdate(channel, message) {
+function addOrUpdateMessage(channel, message) {
     if (!messages.has(channel)) {
         messages = messages.set(channel, Immutable.List());
     }
@@ -97,5 +99,15 @@ function addOrUpdate(channel, message) {
         .push(message);
 
     messages = messages.set(channel, newMessages);
+}
+
+function setErrorOnChannel(channel, error) {
+    console.log('STORE', 'setting error on channel', channel);
+    errors = errors.set(channel, error);
+}
+
+function removeErrorFromChannel(channel) {
+    console.log('STORE', 'removing error on channel', channel);
+    errors = errors.delete(channel);
 }
 
